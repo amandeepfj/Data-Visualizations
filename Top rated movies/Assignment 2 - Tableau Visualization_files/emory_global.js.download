@@ -1,0 +1,146 @@
+$(document).ready(function () {
+    (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function () {
+            (i[r].q = i[r].q || []).push(arguments);
+        }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+    ga('create', 'UA-49222326-4', 'auto');
+    ga('send', 'pageview');
+});
+//End Google
+
+//variables
+var new_magic = true; //for people tool function
+var observer_state = true; //for mutation observer
+
+//Begin Functions
+function hide_settings() {
+    $("a.btn.button-sidebar-wide.delete_course_link").hide(); //hide delete permanently course button
+    $("a[class$='reset_course_content_button']").hide(); //hide reset course content button
+    $("a[href*='confirm_action?event=conclude']").hide(); //hide conclude course button
+    $('a[class$="edit_section_link"]').hide() //hide edit icon under course settings > sections
+    $('a[class$="delete_section_link"]').hide() //hide delete icon under course settings > sections
+    $('#add_section_form').hide(); //hide add section area under course settings > sections
+}
+
+function addpeople_magic() {
+    if (new_magic === true) {
+        $("#addpeople_next").hide(); //hide Next button.
+        $("#peoplesearch_select_role").prepend('<option value="0" disabled selected="selected">Select One...</option>'); //Prepend non-selectable dummy option telling user Select One
+        $("#peoplesearch_select_role option[value='3']").remove(); //remove student role from add users.
+        $("#peoplesearch_select_role option[value='4']").remove(); //remove Teacher role
+        $("#peoplesearch_select_role option[value='5']").remove(); //remove TA role
+        $("#peoplesearch_select_role option[value='63']").remove(); //remove Grade Proxy role
+        $("#peoplesearch_select_role").on('change', function () { //wait for selected item to change
+            $("#addpeople_next").show(); //reveal Next button.
+        })
+    }
+    if (new_magic === false) {
+        //if running after back button is pressed the next button shouldn't be hidden and prepended option shouldn't be selected.
+        $("#peoplesearch_select_role").prepend('<option value="0" disabled>Select One...</option>'); //Prepend non-selectable dummy option telling user Select One
+        $("#peoplesearch_select_role option[value='3']").remove(); //remove student role from add users.
+        $("#peoplesearch_select_role option[value='4']").remove(); //remove Teacher role
+        $("#peoplesearch_select_role option[value='5']").remove(); //remove TA role
+        $("#peoplesearch_select_role option[value='63']").remove(); //remove Grade Proxy role
+    }
+}
+//End Functions
+
+
+    $(document).ready(function () {
+        //edit role changes
+        $(document).on('click', '[data-event="editRoles"]', function () {
+            $("#role_id option[value='3']").remove(); //remove student role from edit user role.
+            $("#role_id option[value='4']").remove(); //remove Teacher role
+            $("#role_id option[value='5']").remove(); //remove TA role
+            $("#role_id option[value='63']").remove(); //remove Grade Proxy role
+        });
+
+        //add people changes
+        // create an observer instance
+        var observer = new MutationObserver(function (mutations) {
+            var addpeople = document.getElementById('peoplesearch_select_role');
+            var backbutton = document.getElementById('addpeople_back');
+            var panel = document.getElementById('addpeople_panelDescription');
+            if (observer_state === true) {
+                if (addpeople) {
+                    addpeople_magic();
+                    observer_state = false;
+                }
+            }
+            if (backbutton) { //if it detects back button it resets state to true so it will continue to look for existence of role select box
+                if ($('span:contains("Start Over")').length || $('span:contains("Start over")').length) {
+                    observer_state = true;
+                    new_magic = true;
+                }
+                if ($('span:contains("Back")').length) {
+                    observer_state = true;
+                    new_magic = false;
+                }
+            }
+            if (!panel) { //if add people window goes away the observer state is set back to true so if will detect the role select box (if it reappears)
+                observer_state = true
+                new_magic = true
+            }
+        })
+
+        var target = document.body //have to monitor body because span is direct child of body.
+        var config = {
+            childList: true,
+            subtree: true
+        }
+
+        // pass in the target node, as well as the observer options
+        observer.observe(target, config);
+    });
+
+if ($.inArray(ENV['current_user_id'], ['118132', '118134', '118135', '118136', '118137', '118138', '118139', '118140', '118141', '118142', '118143', '134127', '127625']) == -1) {
+    if (/courses\/[0-9]+\/settings/.test(window.location.pathname)) {
+        $(document).ready(function () {
+            hide_settings()
+        });
+    };
+
+    if (/courses\/[0-9]+\/details/.test(window.location.pathname)) { //details page is loaded when a user clicks 'Save' on the navigation page under course settings.
+        $(document).ready(function () {
+            hide_settings()
+        });
+    };
+
+    if (/courses\/[0-9]+\/sections/.test(window.location.pathname)) {
+        $("a.btn.button-sidebar-wide.uncrosslist_link").hide() //hide 'de-cross-list this section' button
+    };
+}
+
+if (/profile\/settings/.test(window.location.pathname)) {
+    $('i[title="Set email address as default"]').hide(); //hides default email icon under user account settings.
+};
+
+
+if ((/canvas-beta.emory.edu*/.test(window.location.href)) || (/emory.beta.instructure.com*/.test(window.location.href))) {
+    $("div.ic-app-header__main-navigation").css("background-color", "pink"); //sets nav bar color to pink on canvas beta instance.
+};
+
+if ((/canvas-test.emory.edu*/.test(window.location.href)) || (/emory.test.instructure.com*/.test(window.location.href))) {
+    $("div.ic-app-header__main-navigation").css("background-color", "black"); //sets nav bar color to black on canvas beta instance.
+};
+
+/*####TEMPORARY####*/
+if (/courses\/[0-9]+\/assignments/.test(window.location.pathname)) {
+async function waiter(){
+  let promise = new Promise((resolve, reject) => {
+    setTimeout(() => resolve("wait"), 1000)
+  })
+  let result = await promise;
+  $("select option:contains('Unicheck (Canvas - Unicheck LTI2)')").text('Unicheck (Support ends Dec. 2018)');
+}
+waiter();
+}
+/*####END TEMPORARY####*/

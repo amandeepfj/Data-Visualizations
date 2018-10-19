@@ -1,0 +1,16 @@
+/*//////////////////////////////////////
+////////////////Threaded Discussion Visual Enhancement///////////
+///////////////////////////////////////////////////////////////*/
+.replies {
+ padding-left: 0px;
+ border-left: solid #f2f2f2 16px;
+}
+
+.discussion-read-state-btn {
+    top: 32px;
+    left:-25px !important;
+}
+
+div.entry-content {
+  padding-left:0px !important;
+}
